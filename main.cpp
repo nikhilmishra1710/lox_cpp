@@ -1,53 +1,73 @@
-#include <cstring>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <string>
+#include <bits/stdc++.h>
+#include "Tokeniser.hpp"
+using namespace std;
 
-std::string read_file_contents(const std::string& filename);
+string read_file_contents(const string &filename);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     // Disable output buffering
-    std::cout << std::unitbuf;
-    std::cerr << std::unitbuf;
+    cout << unitbuf;
+    cerr << unitbuf;
 
     // You can use print statements as follows for debugging, they'll be visible when running tests.
-    std::cerr << "Logs from your program will appear here!" << std::endl;
-
-    if (argc < 3) {
-        std::cerr << "Usage: ./your_program tokenize <filename>" << std::endl;
+    // cerr << "Logs from your program will appear here!" << endl;
+    int exit_code = 0;
+    if (argc < 3)
+    {
+        cerr << "Usage: ./your_program tokenize <filename>" << endl;
         return 1;
     }
 
-    const std::string command = argv[1];
+    const string command = argv[1];
 
-    if (command == "tokenize") {
-        std::string file_contents = read_file_contents(argv[2]);
-        
+    if (command == "tokenize")
+    {
+        string file_contents = read_file_contents(argv[2]);
+
         // Uncomment this block to pass the first stage
-        
-        if (!file_contents.empty()) {
-            std::cerr << "Scanner not implemented" << std::endl;
-            return 1;
+
+        if (!file_contents.empty())
+        {
+            vector<Token> tokens = generate_tokens(file_contents);
+            for (const Token &token : tokens)
+            {
+                if (token.valid)
+                {
+                    cout << token;
+                }
+                else
+                {
+                    cerr << token;
+                    exit_code = 65;
+                }
+            }
+            // return 1;
         }
-        std::cout << "EOF  null" << std::endl; // Placeholder, remove this line when implementing the scanner
-        
-    } else {
-        std::cerr << "Unknown command: " << command << std::endl;
+        else
+        {
+            cout << Token("EOF", "", 1);
+        }
+    }
+    else
+    {
+        cerr << "Unknown command: " << command << endl;
         return 1;
     }
 
-    return 0;
+    return exit_code;
 }
 
-std::string read_file_contents(const std::string& filename) {
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Error reading file: " << filename << std::endl;
-        std::exit(1);
+string read_file_contents(const string &filename)
+{
+    ifstream file(filename);
+    if (!file.is_open())
+    {
+        cerr << "Error reading file: " << filename << endl;
+        exit(1);
     }
 
-    std::stringstream buffer;
+    stringstream buffer;
     buffer << file.rdbuf();
     file.close();
 
